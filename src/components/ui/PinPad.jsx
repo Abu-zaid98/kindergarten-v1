@@ -13,32 +13,39 @@ export function PinPad({ value = '', onChange, max = 6, label }) {
   }
 
   return (
-    <div>
-      {label ? <p className="mb-3 text-center text-sm font-bold text-slate-600">{label}</p> : null}
+    <div className="w-full">
+      {label ? (
+        <p className="mb-2 text-center text-[11px] font-bold tracking-[0.12em] text-slate-500 dark:text-slate-300">
+          {label}
+        </p>
+      ) : null}
+
       <div className="mb-2 flex justify-center gap-2" dir="ltr">
         {Array.from({ length: max }).map((_, i) => (
           <span
             key={i}
-            className={`h-3.5 w-3.5 rounded-full border ${
+            className={`h-2.5 w-2.5 rounded-full border ${
               i < value.length
-                ? 'border-blue-600 bg-blue-600'
-                : 'border-slate-300 bg-transparent dark:border-neutral-600'
+                ? 'border-blue-600 bg-blue-600 shadow-[0_0_0_3px_rgba(37,99,235,0.12)]'
+                : 'border-slate-300 bg-transparent dark:border-slate-600'
             }`}
           />
         ))}
       </div>
-      <p className="mb-4 text-center text-xs text-slate-400" dir="ltr">
+
+      <p className="mb-3 text-center text-[10px] font-semibold text-slate-400" dir="ltr">
         {value.length} / {max}
       </p>
-      <div className="mx-auto grid max-w-xs grid-cols-3 gap-2" dir="ltr">
+
+      <div className="mx-auto grid max-w-[220px] grid-cols-3 gap-2.5" dir="ltr">
         {KEYS.map((key) => (
           <button
             key={key}
             type="button"
-            className="flex h-14 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-xl font-extrabold text-slate-800 hover:bg-slate-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100 dark:hover:bg-neutral-800"
+            className="flex h-12 items-center justify-center rounded-2xl border border-slate-200 bg-white text-lg font-extrabold text-slate-800 shadow-[0_8px_16px_rgba(15,23,42,0.04)] transition active:scale-[0.98] hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800"
             onClick={() => (key === 'back' ? backspace() : press(key))}
           >
-            {key === 'back' ? <Delete size={22} /> : key}
+            {key === 'back' ? <Delete size={18} /> : key}
           </button>
         ))}
       </div>
