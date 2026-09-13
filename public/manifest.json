@@ -1,0 +1,19 @@
+{
+  "name": "نظام دفع الروضة",
+  "short_name": "دفع الروضة",
+  "description": "إدارة الدفع الشهري لطلاب الروضة",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
