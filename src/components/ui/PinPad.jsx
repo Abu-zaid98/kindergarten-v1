@@ -12,6 +12,7 @@ export function PinPad({ value = '', onChange, max = 6, label }) {
     onChange(value.slice(0, -1));
   }
 
+
   return (
     <div className="w-full">
       {label ? (
@@ -24,11 +25,10 @@ export function PinPad({ value = '', onChange, max = 6, label }) {
         {Array.from({ length: max }).map((_, i) => (
           <span
             key={i}
-            className={`h-3 w-3 rounded-full border ${
-              i < value.length
+            className={`h-3 w-3 rounded-full border ${i < value.length
                 ? 'border-blue-600 bg-blue-600 shadow-[0_0_0_4px_rgba(37,99,235,0.15)]'
                 : 'border-slate-300 bg-transparent dark:border-slate-600'
-            }`}
+              }`}
           />
         ))}
       </div>

@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { BarChart3, CreditCard, Home, Settings, Users } from 'lucide-react';
 import { useSettings } from '../../hooks/useAuth';
 import { Navbar } from './Navbar';
@@ -14,11 +14,14 @@ const links = [
 
 export function AppShell() {
   const settings = useSettings();
+  const location = useLocation();
   return (
     <div className="min-h-screen">
       <Navbar title={settings?.kindergartenName || 'نظام دفع الروضة'} links={links} />
       <main className="mx-auto max-w-5xl px-4 pb-24 pt-4 sm:pb-10">
-        <Outlet />
+        <div key={location.pathname} className="page-enter-inner">
+          <Outlet />
+        </div>
       </main>
       <BottomNav links={links} />
     </div>
