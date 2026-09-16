@@ -385,7 +385,7 @@ export function LoginPage() {
         </div>
 
         {/* Footer — compact single row */}
-        <footer className="mt-2.5">
+        <footer className="mt-1.5">
           <div className="flex items-center justify-between rounded-2xl border border-white/70 bg-white/55 px-3 py-2 shadow-sm backdrop-blur-sm dark:border-slate-700/40 dark:bg-slate-900/40">
             <div className="flex items-center gap-2">
               <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-[#0f766e] to-[#1d4ed8] shadow-sm">

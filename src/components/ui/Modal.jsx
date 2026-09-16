@@ -1,14 +1,16 @@
 import { X } from 'lucide-react';
+import { createPortal } from 'react-dom';
 
 export function Modal({ open, title, onClose, children, wide = false, layer = 'z-50' }) {
   if (!open) return null;
-  return (
-    <div className={`fixed inset-0 ${layer} flex items-end justify-center bg-slate-900/40 p-0 sm:items-center sm:p-4`}>
+  return createPortal(
+    (
+    <div className={`fixed inset-0 ${layer} flex items-center justify-center overflow-hidden bg-slate-900/40 p-1 sm:p-2`}>
       <button className="absolute inset-0" aria-label="إغلاق" onClick={onClose} />
       <div
-        className={`relative z-10 max-h-[92vh] w-full overflow-y-auto rounded-t-3xl bg-white p-5 shadow-xl sm:rounded-3xl ${wide ? 'max-w-3xl' : 'max-w-lg'}`}
+        className={`relative z-10 flex max-h-[calc(100dvh-1.5rem)] w-full min-h-0 flex-col overflow-hidden rounded-3xl bg-white p-3 shadow-xl sm:max-h-[calc(100dvh-2rem)] ${wide ? 'max-w-3xl' : 'max-w-lg'}`}
       >
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4 flex shrink-0 items-center justify-between">
           <h2 className="text-lg font-extrabold">{title}</h2>
           <button
             onClick={onClose}
@@ -18,8 +20,12 @@ export function Modal({ open, title, onClose, children, wide = false, layer = 'z
             <X size={18} />
           </button>
         </div>
-        {children}
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+          {children}
+        </div>
       </div>
     </div>
+    ),
+    document.body,
   );
 }

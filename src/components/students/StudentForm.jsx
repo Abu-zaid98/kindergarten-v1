@@ -55,7 +55,16 @@ export function StudentForm({ student, defaults, onSubmit, onCancel }) {
       <Select label="صلة القرابة" value={form.guardianRelation} onChange={(e) => set('guardianRelation', e.target.value)}>
         <option>أب</option>
         <option>أم</option>
-        <option>جد</option>
+        <option>جد</option>  
+        <option>أخ</option>  
+        <option>أخت</option>
+        <option>عم</option>
+        <option>عمة</option>
+        <option>خال</option>
+        <option>خالة</option>
+        <option>ابن عم</option>
+        <option>ابنة عم</option>
+        <option>ابن خال</option>
         <option>غيره</option>
       </Select>
       <Input label="رقم الجوال الأساسي *" value={form.phone1} onChange={(e) => set('phone1', e.target.value)} required />
