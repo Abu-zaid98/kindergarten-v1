@@ -90,6 +90,12 @@ export async function paymentsOnDate(isoDate) {
   return rows.map((payment) => ({ payment, student: map.get(payment.studentId) }));
 }
 
+export async function paymentMatrixForYear(year, months) {
+  const allowedMonths = months.map(Number);
+  const payments = (await db.payments.toArray()).filter((payment) => Number(payment.year) === Number(year) && allowedMonths.includes(Number(payment.month)));
+  return payments;
+}
+
 export function summarizeRows(rows) {
   const due = rows.reduce((sum, r) => sum + (Number(r.payment.amountDue) || 0), 0);
   const paid = rows.reduce((sum, r) => sum + (Number(r.payment.amountPaid) || 0), 0);

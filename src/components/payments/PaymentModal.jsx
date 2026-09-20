@@ -5,7 +5,7 @@ import { Button } from '../ui/Button';
 import { PAYMENT_METHODS } from '../../db/payments';
 import { todayISO } from '../../utils/dates';
 
-export function PaymentModal({ open, target, onClose, onSave }) {
+export function PaymentModal({ open, target, onClose, onSave, title }) {
   const [form, setForm] = useState(null);
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export function PaymentModal({ open, target, onClose, onSave }) {
   }
 
   return (
-    <Modal open={open} title={`دفعة ${target.student.fullName}`} onClose={onClose}>
+    <Modal open={open} title={`${title || 'دفعة'} ${target.student.fullName}`} onClose={onClose}>
       <div className="mb-4 grid grid-cols-3 gap-2">
         <Button variant={form.status === 'paid' ? 'success' : 'secondary'} onClick={() => applyStatus('paid')}>تم الدفع</Button>
         <Button variant={form.status === 'partial' ? 'primary' : 'secondary'} onClick={() => applyStatus('partial')}>جزئي</Button>

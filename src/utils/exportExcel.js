@@ -96,6 +96,15 @@ export function exportUnpaidList({ kindergartenName, month, year, rows }) {
   });
 }
 
+export function exportEnrollmentReport({ kindergartenName, stats, rows }) {
+  exportWorkbook({
+    filename: excelFileName(kindergartenName, 'تقرير_رسوم_التسجيل'),
+    summaryRows: [['اسم الروضة', kindergartenName], ['عدد الطلاب', stats.totalStudents], ['إجمالي رسوم التسجيل', formatILS(stats.due)], ['المحصّل', formatILS(stats.paid)], ['المتبقي', formatILS(stats.deficit)]],
+    detailRows: [['اسم الطالب', 'المطلوب', 'المدفوع', 'الحالة', 'الطريقة', 'التاريخ', 'الملاحظة'], ...rows],
+    colWidths: [24, 16, 14, 14, 16, 16, 28],
+  });
+}
+
 export function exportYearlyReport({ kindergartenName, year, rows, totals }) {
   const filename = excelFileName(kindergartenName, 'التقرير_السنوي', null, year);
   exportWorkbook({
@@ -123,6 +132,23 @@ export function exportStudentLedger({ kindergartenName, studentName, rows }) {
     ],
     detailRows: [['الشهر', 'السنة', 'المطلوب', 'المدفوع', 'الحالة', 'الطريقة', 'التاريخ', 'ملاحظة'], ...rows],
     colWidths: [14, 10, 14, 14, 14, 16, 16, 24],
+  });
+}
+
+export function exportSalaryReport({ kindergartenName, month, year, stats, rows }) {
+  const filename = excelFileName(kindergartenName, 'تقرير_الرواتب', month, year);
+  exportWorkbook({
+    filename,
+    summaryRows: [
+      ['اسم الروضة', kindergartenName],
+      ['الشهر', `${monthName(month)} ${year}`],
+      ['عدد الموظفين', stats.total],
+      ['إجمالي الرواتب', formatILS(stats.due)],
+      ['المصروف', formatILS(stats.paid)],
+      ['المتبقي', formatILS(stats.deficit)],
+    ],
+    detailRows: [['الاسم', 'الصفة', 'المستحق', 'المدفوع', 'الحالة', 'الطريقة', 'التاريخ', 'ملاحظة'], ...rows],
+    colWidths: [24, 18, 14, 14, 14, 16, 16, 24],
   });
 }
 

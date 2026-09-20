@@ -22,6 +22,7 @@ export function ReportsPage() {
   const month = useAppStore((s) => s.selectedMonth);
   const year = useAppStore((s) => s.selectedYear);
   const settings = useSettings();
+  const workingMonths = Array.isArray(settings?.workingMonths) && settings.workingMonths.length ? settings.workingMonths.map(Number).sort((a, b) => a - b) : Array.from({ length: 12 }, (_, index) => index + 1);
   const rows = useMonthPayments(year, month);
   const [dayDraft, setDayDraft] = useState(todayISO());
   const [day, setDay] = useState(todayISO());
@@ -33,8 +34,8 @@ export function ReportsPage() {
   const yearly = useLiveQuery(async () => {
     const students = (await listStudents()).filter((s) => s.isActive !== false);
     const payments = (await db.payments.toArray()).filter((p) => Number(p.year) === Number(year));
-    return ARABIC_MONTHS.map((name, i) => {
-      const m = i + 1;
+    return workingMonths.map((m) => {
+      const name = ARABIC_MONTHS[m - 1];
       const due = students.reduce((sum, s) => sum + (Number(s.monthlyFee) || 0), 0);
       const monthPays = payments.filter((p) => Number(p.month) === m);
       const paid = monthPays.reduce((sum, p) => sum + (Number(p.amountPaid) || 0), 0);
@@ -47,7 +48,7 @@ export function ReportsPage() {
         rate: due ? Math.round((paid / due) * 100) : 0,
       };
     });
-  }, [year]) || [];
+  }, [year, workingMonths.join(',')]) || [];
 
   const methodData = useMemo(() => {
     const map = {};

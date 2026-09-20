@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
+import { LayoutGrid, List, Plus, Trash2 } from 'lucide-react';
 import { useStudents } from '../hooks/useStudents';
-import { useStudentPayments } from '../hooks/usePayments';
+import { useEnrollmentPayment, useStudentPayments } from '../hooks/usePayments';
 import { useSettings } from '../hooks/useAuth';
 import { saveStudent, deleteStudent } from '../db/students';
 import { StudentList } from '../components/students/StudentList';
@@ -13,15 +14,30 @@ import { formatILS } from '../utils/currency';
 import { formatDate, monthName } from '../utils/dates';
 import { methodLabel, STATUS_LABELS } from '../db/payments';
 import { exportStudentLedger } from '../utils/exportExcel';
+import { useClassrooms } from '../hooks/useClassrooms';
+import { usePaymentMatrix } from '../hooks/usePayments';
+import { useAppStore } from '../store/appStore';
+import { emptyEnrollmentPayment, saveEnrollmentPayment } from '../db/enrollmentPayments';
+import { PaymentModal } from '../components/payments/PaymentModal';
 
 export function StudentsPage() {
   const { students } = useStudents();
   const settings = useSettings();
+  const { classrooms } = useClassrooms();
+  const selectedYear = useAppStore((s) => s.selectedYear);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState('');
   const [editing, setEditing] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
   const [opened, setOpened] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [enrollmentTarget, setEnrollmentTarget] = useState(null);
+  const [view, setView] = useState('cards');
+  const classroomId = searchParams.get('classroom') || '';
+  const workingMonths = Array.isArray(settings?.workingMonths) && settings.workingMonths.length ? settings.workingMonths.map(Number).sort((a, b) => a - b) : Array.from({ length: 12 }, (_, index) => index + 1);
+  const payments = usePaymentMatrix(selectedYear, workingMonths);
+
+  function setClassroomId(id) { setSearchParams(id ? { classroom: id } : {}); }
 
   function openNew() {
     setEditing(null);
@@ -47,28 +63,33 @@ export function StudentsPage() {
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between gap-3">
         <div>
           <h2 className="text-xl font-extrabold">الطلاب</h2>
-          <p className="text-sm text-slate-500">{students.length} طالب</p>
+          <p className="text-sm text-slate-500">{classroomId ? `${students.filter((s) => s.classroomId === classroomId).length} طالب في الفصل المحدد` : `${students.length} طالب`}</p>
         </div>
-        <Button onClick={openNew}>
-          <Plus size={16} />
-          إضافة طالب
-        </Button>
+        <div className="flex items-center gap-2"><div className="flex rounded-xl border border-slate-200 bg-white p-1"><button type="button" onClick={() => setView('cards')} className={`rounded-lg p-2 ${view === 'cards' ? 'bg-blue-50 text-blue-700' : 'text-slate-400'}`} title="عرض البطاقات"><LayoutGrid size={17} /></button><button type="button" onClick={() => setView('table')} className={`rounded-lg p-2 ${view === 'table' ? 'bg-blue-50 text-blue-700' : 'text-slate-400'}`} title="عرض الجدول"><List size={17} /></button></div><Button onClick={openNew}><Plus size={16} /><span className="hidden sm:inline">إضافة طالب</span></Button></div>
       </div>
       <StudentList
         students={students}
+        classrooms={classrooms}
+        classroomId={classroomId}
+        onClassroomChange={setClassroomId}
         query={query}
         onQuery={setQuery}
         onOpen={setOpened}
         onEdit={openEdit}
+        view={view}
+        payments={payments}
+        months={workingMonths}
+        year={selectedYear}
       />
 
       <Modal open={formOpen} title={editing ? 'تعديل طالب' : 'طالب جديد'} onClose={() => setFormOpen(false)} wide>
         <StudentForm
           student={editing}
           defaults={settings || {}}
+          classrooms={classrooms}
           onSubmit={handleSave}
           onCancel={() => setFormOpen(false)}
         />
@@ -80,7 +101,10 @@ export function StudentsPage() {
         onClose={() => setOpened(null)}
         onEdit={() => { setOpened(null); openEdit(opened); }}
         onDelete={(student) => setDeleteTarget(student)}
+        onEnrollment={(student, payment) => setEnrollmentTarget({ student, payment })}
       />
+
+      <PaymentModal open={!!enrollmentTarget} target={enrollmentTarget} title="رسوم تسجيل" onClose={() => setEnrollmentTarget(null)} onSave={async (payment) => { await saveEnrollmentPayment(payment); setEnrollmentTarget(null); }} />
 
       <ConfirmModal
         open={!!deleteTarget}
@@ -96,8 +120,9 @@ export function StudentsPage() {
   );
 }
 
-function StudentDetails({ student, onClose, onEdit, onDelete, kindergartenName }) {
+function StudentDetails({ student, onClose, onEdit, onDelete, onEnrollment, kindergartenName }) {
   const history = useStudentPayments(student?.id);
+  const enrollmentPayment = useEnrollmentPayment(student?.id);
   if (!student) return null;
 
   return (
@@ -105,10 +130,13 @@ function StudentDetails({ student, onClose, onEdit, onDelete, kindergartenName }
       <div className="grid gap-2 text-sm">
         <p><b>ولي الأمر:</b> {student.guardianName} ({student.guardianRelation})</p>
         <p><b>الجوال:</b> {student.phone1} {student.phone2 ? ` / ${student.phone2}` : ''}</p>
+        {student.classroom ? <p><b>الفصل:</b> {student.classroom}</p> : null}
         <p><b>الرسوم:</b> {formatILS(student.monthlyFee)}</p>
+        <p><b>رسوم التسجيل:</b> {formatILS(student.enrollmentFee)}</p>
         <p><b>التسجيل:</b> {formatDate(student.enrollmentDate)}</p>
         {student.notes ? <p><b>ملاحظات:</b> {student.notes}</p> : null}
       </div>
+      <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50/50 p-3"><div className="flex flex-wrap items-center justify-between gap-2"><div><h3 className="font-extrabold">رسوم التسجيل</h3><p className="mt-1 text-sm text-slate-600">{formatILS(enrollmentPayment?.amountPaid || 0)} من {formatILS(enrollmentPayment?.amountDue ?? student.enrollmentFee)} · {STATUS_LABELS[enrollmentPayment?.status || 'unpaid']}</p></div><Button onClick={() => onEnrollment(student, enrollmentPayment || emptyEnrollmentPayment(student))}>{enrollmentPayment?.status === 'paid' ? 'عرض الدفعة' : 'تسجيل الدفع'}</Button></div></div>
       <h3 className="mt-5 mb-2 font-extrabold">سجل المدفوعات</h3>
       <div className="max-h-64 overflow-auto rounded-2xl border border-slate-100">
         {history.length === 0 ? (

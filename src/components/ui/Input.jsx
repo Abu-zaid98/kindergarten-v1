@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Children, useEffect, useRef, useState } from 'react';
 import { Check, ChevronDown } from 'lucide-react';
 
 export function Input({ label, error, className = '', ...props }) {
@@ -16,7 +16,8 @@ export function Input({ label, error, className = '', ...props }) {
 
 export function Select({ label, children, className = '', ...props }) {
   const { value, onChange, disabled = false, ...buttonProps } = props;
-  const options = Array.isArray(children) ? children : [children];
+  // Children.toArray also flattens options produced by .map(), such as classrooms.
+  const options = Children.toArray(children);
   const selectedOption = options.find((option) => String(option?.props?.value) === String(value)) || options[0];
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);

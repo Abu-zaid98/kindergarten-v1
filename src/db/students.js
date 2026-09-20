@@ -22,8 +22,9 @@ export async function saveStudent(student) {
 }
 
 export async function deleteStudent(id) {
-  await db.transaction('rw', db.students, db.payments, async () => {
+  await db.transaction('rw', db.students, db.payments, db.enrollmentPayments, async () => {
     await db.students.delete(id);
     await db.payments.where('studentId').equals(id).delete();
+    await db.enrollmentPayments.where('studentId').equals(id).delete();
   });
 }

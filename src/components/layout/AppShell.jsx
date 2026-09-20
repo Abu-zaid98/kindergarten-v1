@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
-import { BarChart3, CreditCard, Home, Settings, Users } from 'lucide-react';
+import { BarChart3, CreditCard, Home, Settings, Users, School, BriefcaseBusiness } from 'lucide-react';
 import { useSettings } from '../../hooks/useAuth';
 import { Navbar } from './Navbar';
 import { BottomNav } from './BottomNav';
@@ -7,6 +7,8 @@ import { BottomNav } from './BottomNav';
 const links = [
   { to: '/', label: 'الرئيسية', icon: Home },
   { to: '/students', label: 'الطلاب', icon: Users },
+  { to: '/classrooms', label: 'الفصول', icon: School },
+  { to: '/staff', label: 'الكادر', icon: BriefcaseBusiness },
   { to: '/payments', label: 'المدفوعات', icon: CreditCard },
   { to: '/reports', label: 'التقارير', icon: BarChart3 },
   { to: '/settings', label: 'الإعدادات', icon: Settings },
@@ -18,7 +20,7 @@ export function AppShell() {
   return (
     <div className="min-h-screen">
       <Navbar title={settings?.kindergartenName || 'نظام دفع الروضة'} links={links} />
-      <main className="mx-auto max-w-5xl px-4 pb-24 pt-4 sm:pb-10">
+      <main className="mx-auto max-w-5xl px-4 pb-28 pt-4 sm:pb-10">
         <div key={location.pathname} className="page-enter-inner">
           <Outlet />
         </div>

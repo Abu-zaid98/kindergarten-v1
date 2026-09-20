@@ -76,7 +76,7 @@ function PinKeyboard({ value, onChange, max = 6 }) {
       <p className="text-center text-[10px] font-semibold text-slate-400 dark:text-slate-500 mb-2 mt-0.5" dir="ltr">
         {value.length} / {max}
       </p>
-      <div className="mx-auto grid max-w-[270px] grid-cols-3 gap-2" dir="ltr">
+      <div className="mx-auto grid w-full max-w-[330px] grid-cols-3 gap-3" dir="ltr">
         {PIN_KEYS.map((key) => {
           const isBack  = key === 'back';
           const isClear = key === 'clear';
@@ -87,8 +87,8 @@ function PinKeyboard({ value, onChange, max = 6 }) {
               onClick={() => isBack ? onChange(value.slice(0,-1)) : isClear ? onChange('') : press(key)}
               aria-label={isBack ? 'حذف' : isClear ? 'مسح' : key}
               className={`
-                flex h-[44px] items-center justify-center rounded-xl border text-lg font-bold
-                transition-all duration-150 active:scale-[0.91]
+                flex h-[58px] items-center justify-center rounded-2xl border text-2xl font-black
+                shadow-[0_5px_14px_rgba(15,23,42,0.08)] transition-all duration-150 active:scale-[0.91]
                 ${(isBack || isClear)
                   ? 'border-slate-200/60 bg-slate-100/80 text-slate-500 hover:bg-slate-200/80 dark:border-slate-600/40 dark:bg-slate-700/60 dark:text-slate-400 dark:hover:bg-slate-700'
                   : 'border-white/60 bg-white/90 text-slate-800 shadow-[0_3px_8px_rgba(15,23,42,0.07)] hover:bg-white dark:border-slate-600/30 dark:bg-slate-800/80 dark:text-white dark:hover:bg-slate-700/90'
@@ -275,7 +275,7 @@ export function LoginPage() {
       <style>{STYLES}</style>
       <Blobs />
 
-      <div className="relative z-10 mx-auto flex h-full max-w-[430px] flex-col px-4 pt-3 pb-3">
+      <div className="relative z-10 mx-auto flex h-full max-w-[430px] flex-col px-4 pt-4 pb-3">
 
         {/* ── Header: logo + title + theme toggle ── */}
         <header className={`flex items-center justify-between transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}`}>
@@ -296,7 +296,7 @@ export function LoginPage() {
         </header>
 
         {/* Glass Card */}
-        <div className={`mt-3 flex-1 rounded-[28px] border border-white/70 bg-white/65 px-4 py-3 shadow-[0_20px_60px_rgba(15,23,42,0.09),0_4px_16px_rgba(15,23,42,0.05)] backdrop-blur-xl dark:border-slate-700/50 dark:bg-slate-900/50 transition-all duration-500 overflow-hidden flex flex-col ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+        <div className={`mt-4 flex-1 rounded-[30px] border border-white/70 bg-white/65 px-5 py-4 shadow-[0_20px_60px_rgba(15,23,42,0.09),0_4px_16px_rgba(15,23,42,0.05)] backdrop-blur-xl dark:border-slate-700/50 dark:bg-slate-900/50 transition-all duration-500 overflow-hidden flex flex-col ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
 
           <ErrorBanner message={error} />
 

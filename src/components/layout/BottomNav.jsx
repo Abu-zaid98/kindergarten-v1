@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 export function BottomNav({ links }) {
   return (
     <nav className="no-print fixed bottom-0 left-0 right-0 z-30 border-t border-slate-200 bg-white/90 px-2 py-2 shadow-[0_-8px_25px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:hidden dark:border-neutral-800 dark:bg-[#0d0d0f]/90">
-      <div className="mx-auto grid max-w-lg grid-cols-5 gap-1">
+      <div className="mx-auto grid max-w-xl grid-cols-7 gap-1">
         {links.map((link) => {
           const Icon = link.icon;
           return (

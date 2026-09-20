@@ -7,6 +7,8 @@ import { StudentsPage } from './pages/StudentsPage';
 import { PaymentsPage } from './pages/PaymentsPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { ClassroomsPage } from './pages/ClassroomsPage';
+import { StaffPage } from './pages/StaffPage';
 
 function Guard({ children }) {
   const { ready, isAuthenticated, needsSetup } = useAuth();
@@ -39,6 +41,8 @@ export default function App() {
       >
         <Route path="/" element={<DashboardPage />} />
         <Route path="/students" element={<StudentsPage />} />
+        <Route path="/classrooms" element={<ClassroomsPage />} />
+        <Route path="/staff" element={<StaffPage />} />
         <Route path="/payments" element={<PaymentsPage />} />
         <Route path="/reports" element={<ReportsPage />} />
         <Route path="/settings" element={<SettingsPage />} />
